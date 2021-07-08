@@ -1,20 +1,53 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, Button, View, TextInput} from 'react-native';
 import TextInputLayout from '../../components/TextInputLayout';
+import LoginButton from '../../components/AppLoginButton';
 
 const Login = props => {
-  const [Email, setEmail] = useState('');
-  const [Name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [loginButtonStatus, setStatus] = useState(false);
 
-  function handleEmail(email) {
-    setEmail(email);
+  function validateEmail(email) {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
   }
-  function handleName(name) {
-    setName(name);
+
+  function handleEmail(emailAddress) {
+    console.log('email= ', emailAddress);
+    emailAddress = emailAddress.trim();
+    setEmail(emailAddress);
+    setEmailError(' ');
+
+    password === '' ||
+    password === undefined ||
+    emailAddress === '' ||
+    emailAddress === undefined
+      ? setStatus(false)
+      : setStatus(true);
+  }
+  function handlePassword(newPassword) {
+    newPassword = newPassword.trim();
+    setPassword(newPassword);
+    newPassword === '' ||
+    newPassword === undefined ||
+    email === '' ||
+    email === undefined
+      ? setStatus(false)
+      : setStatus(true);
   }
 
   const handleLogin = () => {
-    Name === '' ? alert('Enter your name first') : alert(Name);
+    if (email === '' || password === '') {
+      return;
+    }
+    const result = validateEmail(email);
+    if (!result) {
+      setEmailError('Invalid Email');
+    }
   };
 
   return (
@@ -27,24 +60,27 @@ const Login = props => {
       </View>
       <View style={styles.inputBackground}>
         <TextInputLayout
-          onChangeText={val => handleName(val)}
-          placeholder={'Your email'}
-          maxLength={22}
-        />
-        <TextInputLayout
           onChangeText={val => handleEmail(val)}
+          placeholder={'Your email'}
+          maxLength={32}
+        />
+        <Text style={styles.errorText}>{emailError}</Text>
+        <TextInputLayout
+          onChangeText={val => handlePassword(val)}
           placeholder={'Your password'}
           maxLength={28}
+          secureEntry={true}
+          style={{marginTop: 12}}
         />
+        <Text style={styles.errorText}>{passwordError}</Text>
       </View>
-      <View style={styles.submitButtonBackground}>
-        <Button
-          onPress={handleLogin}
-          color="black"
-          title="LOGIN"
-          style={styles.submitButtonBackground}
-        />
-      </View>
+      <LoginButton
+        style={styles.loginButton}
+        loginText={'Login'}
+        onLoginClicked={handleLogin}
+        isEnable={loginButtonStatus}
+        progress={false}
+      />
     </View>
   );
 };
@@ -57,7 +93,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   inputBackground: {
-    width: '100%',
+    flex: 1,
+    marginTop: 24,
+    paddingHorizontal: 32,
   },
   input: {
     borderWidth: 1,
@@ -67,6 +105,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 18,
   },
+  errorText: {
+    color: '#EB5053',
+    fontSize: 13,
+    fontWeight: '400',
+    paddingHorizontal: 4,
+  },
   text: {
     color: 'black',
     marginStart: 24,
@@ -74,12 +118,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 16,
   },
-  submitButtonBackground: {
-    backgroundColor: 'dodgerblue',
-    paddingVertical: 6,
+  loginButton: {
     marginHorizontal: 32,
-    borderRadius: 8,
-    justifyContent: 'flex-end',
+    bottom: 18,
   },
   welcomeText: {
     color: 'black',
@@ -89,7 +130,7 @@ const styles = StyleSheet.create({
   welcomeDescription: {
     top: 6,
     color: 'grey',
-    fontWeight: '600',
+    fontWeight: '500',
     fontSize: 18,
   },
 });

@@ -5,6 +5,7 @@ import Welcome from '../app/screens/welcomeScreen/index';
 import Login from './screens/login/index';
 import EmployeeList from './screens/dashboard/index';
 import Card from './components/EmployeeCard';
+import AppButton from '../app/components/AppButton';
 
 import {
   Colors,
@@ -18,7 +19,7 @@ const App = () => {
   console.log(Welcome);
   return (
     <SafeAreaView style={styles.background}>
-      <Welcome />
+      <Login />
     </SafeAreaView>
   );
 };
